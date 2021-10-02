@@ -27,8 +27,8 @@ export class Tasks extends Model {
     description: string;
 
     @Column ({
-        type: DataType.ENUM,
-        values: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE],
+        type: DataType.STRING,
+        //values: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE],
         defaultValue: TaskStatus.OPEN
     })
     status: string;

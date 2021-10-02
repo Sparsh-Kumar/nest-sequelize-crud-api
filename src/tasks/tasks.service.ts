@@ -13,47 +13,32 @@ export class TasksService {
     constructor (private tasksRepository: TaskRepository) {}
 
     private tasks = [];
-    getAllTasks (): Task [] {
-        return this.tasks;
+
+    async getAllTasks (): Promise <Tasks []> {
+        return await this.tasksRepository.getAllTasks ();
     }
 
-    getTaskById (id: string): Task {
-        const found = this.tasks.find ((task) => task.id === id);
-        if (!found) {
-            throw new NotFoundException (`Task with ID = ${id} not found`);
-        }
-        return found;
+    async getTaskById (id: string): Promise <Tasks> {
+        return await this.tasksRepository.getTaskById (id);
     }
 
-    getTasksWithFilter (filterDto: GetTaskFilterDto): Task [] {
-
-        const { status, searchTerm } = filterDto;
-        let tasks = this.getAllTasks ();
-
-        if (status) {
-            tasks = tasks.filter (task => task.status === status);
-        }
-
-        if (searchTerm) {
-            tasks = tasks.filter ((task) => {
-                return task.title.toLowerCase ().includes (searchTerm.toLowerCase ()) || task.description.toLowerCase ().includes (searchTerm.toLowerCase ());
-            })
-        }
-
-        return tasks;
-
+    async getTasksWithFilter (filterDto: GetTaskFilterDto): Promise <Tasks []> {
+        return await this.tasksRepository.getTasksWithFilter (filterDto)
     }
 
     async createTask (createTaskDto: CreateTaskDto): Promise <Tasks> {
-        return this.tasksRepository.createNewTask (createTaskDto);
+        return await this.tasksRepository.createNewTask (createTaskDto);
     }
 
-    deleteTask (id: string): void {
-
-        const found = this.getTaskById (id);
-        this.tasks = this.tasks.filter ((task) => task.id !== id);
-
+    async deleteTask (id: string): Promise <void> {
+        await this.tasksRepository.deleteTaskById (id);
     }
+
+
+    async updateTaskStatus (id: string, status: TaskStatus): Promise <any> {
+        return await this.tasksRepository.updateTaskStatus (id, status);
+    }
+
 
     /*
     updateTaskStatus (id: string, updateTaskDto: UpdateTaskDto): Task {
@@ -65,13 +50,5 @@ export class TasksService {
 
     }
     */
-
-    updateTaskStatus (id: string, status: TaskStatus): Task {
-
-        const task = this.getTaskById (id);
-        task.status = status;
-        return task;
-
-    }
 
 }

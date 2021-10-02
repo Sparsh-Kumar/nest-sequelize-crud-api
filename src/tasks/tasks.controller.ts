@@ -5,6 +5,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { GetTaskFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
+import { Tasks } from './models/tasks.model';
 
 @Controller('tasks')
 export class TasksController {
@@ -27,7 +28,7 @@ export class TasksController {
 
     @Post ()
     @UsePipes (ValidationPipe)
-    createTask (@Body () createTaskDto: CreateTaskDto): Task {
+    async createTask (@Body () createTaskDto: CreateTaskDto): Promise <Tasks> {
         return this.taskService.createTask (createTaskDto);
     }
 

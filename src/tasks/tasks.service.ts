@@ -3,14 +3,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
 import { GetTaskFilterDto } from './dto/get-tasks-filter.dto';
+import { TaskRepository } from './repositories/task.repository';
+import { Tasks } from './models/tasks.model';
 
 @Injectable()
 export class TasksService {
 
-    private tasks: Task [] = [];
+    constructor (private tasksRepository: TaskRepository) {}
 
+    private tasks = [];
     getAllTasks (): Task [] {
         return this.tasks;
     }
@@ -42,20 +44,8 @@ export class TasksService {
 
     }
 
-    createTask (createTaskDto: CreateTaskDto): Task {
-
-        const { title, description } = createTaskDto;
-        
-        const task: Task = {
-            id: uuidv4 (),
-            title,
-            description,
-            status: TaskStatus.OPEN
-        }
-
-        this.tasks.push (task);
-        return task;
-
+    async createTask (createTaskDto: CreateTaskDto): Promise <Tasks> {
+        return this.tasksRepository.createNewTask (createTaskDto);
     }
 
     deleteTask (id: string): void {

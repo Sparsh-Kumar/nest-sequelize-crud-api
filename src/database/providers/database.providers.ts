@@ -3,6 +3,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { SEQUELIZE, DEVELOPMENT, TEST, PRODUCTION } from '../constants';
 import { databaseConfig } from "../database.config";
+import { Tasks} from "src/tasks/models/tasks.model";
 
 export const databaseProviders = [
     {
@@ -26,7 +27,7 @@ export const databaseProviders = [
             }
 
             const sequelize = new Sequelize (config);
-            sequelize.addModels ([]);
+            sequelize.addModels ([Tasks]);
             await sequelize.sync ();
             return sequelize;
 

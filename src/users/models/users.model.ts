@@ -1,10 +1,9 @@
 
-
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import { TaskStatus } from '../task.model';
 
 @Table
-export class Tasks extends Model {
+export class Users extends Model {
+
 
     @Column ({
         primaryKey: true,
@@ -16,21 +15,22 @@ export class Tasks extends Model {
 
     @Column ({
         type: DataType.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     })
-    title: string;
+    username: string;
+
+    @Column ({
+        type: DataType.STRING,
+        allowNull: false,
+        unique: true
+    })
+    email: string;
 
     @Column ({
         type: DataType.STRING,
         allowNull: false
     })
-    description: string;
-
-    @Column ({
-        type: DataType.STRING,
-        values: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE],
-        defaultValue: TaskStatus.OPEN
-    })
-    status: string;
-
+    password: string;
+    
 }

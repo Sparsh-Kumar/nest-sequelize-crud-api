@@ -2,7 +2,7 @@
 
 // https://github.com/typestack/class-validator#validation-decorators
 
-import { isAlphanumeric, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
 
@@ -20,6 +20,6 @@ export class CreateUserDto {
     @IsNotEmpty ()
     @MinLength (4)
     @MaxLength (45)
-    @Matches (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)
+    @Matches (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
     password: string;
 }

@@ -7,3 +7,7 @@ export const userProviders = [{
     provide: USER_REPOSITORY,
     useValue: Users
 }]
+
+export interface JWTPayload {
+    accessToken: string;
+}

@@ -14,12 +14,22 @@ export class CreateUserDto {
     @IsNotEmpty ()
     @MinLength (4)
     @MaxLength (40)
-    @Matches (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+    @Matches (
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        {
+            message: 'Please enter a valid email !.'
+        }
+    )
     email: string;
 
     @IsNotEmpty ()
     @MinLength (4)
     @MaxLength (45)
-    @Matches (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
+    @Matches (
+        /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
+        {
+            message: 'Password must contain a special character, a number, lowecase and uppercase letter !.'
+        }
+    )
     password: string;
 }

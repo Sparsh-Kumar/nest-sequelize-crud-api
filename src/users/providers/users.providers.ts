@@ -11,3 +11,7 @@ export const userProviders = [{
 export interface JWTPayload {
     accessToken: string;
 }
+
+export interface DecodedJWTPayload {
+    id: string;
+}

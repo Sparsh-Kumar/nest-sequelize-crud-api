@@ -23,6 +23,11 @@ export class UsersController {
         return await this.userService.signInUser(signInUserDto);
     }
 
+    /*
+
+    // You can also use @Req() req decorator in place of @GetUser decorator and log the value of req.user
+    // to see that passport set up req.user value after decoding
+     
     @Post('test')
     @UseGuards(AuthGuard())
     async test(@GetUser() user: Users): Promise<Users> {
@@ -30,4 +35,5 @@ export class UsersController {
         console.log(user);
         return user;
     }
+    */
 }

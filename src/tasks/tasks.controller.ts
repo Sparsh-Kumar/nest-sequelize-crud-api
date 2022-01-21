@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, Delete, Patch, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete, Patch, Query, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task, TaskStatus } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -6,14 +6,18 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { GetTaskFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 import { Tasks } from './models/tasks.model';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/users/custom-decorators/get-user.decorator';
+import { Users } from 'src/users/models/users.model';
 
 @Controller('tasks')
+@UseGuards(AuthGuard())
 export class TasksController {
     
     constructor (private taskService: TasksService) {}
 
     @Get ()
-    async getTasks (@Query (ValidationPipe) getTasksFilterDto: GetTaskFilterDto): Promise <Tasks []> {
+    async getTasks (@Query (ValidationPipe) getTasksFilterDto: GetTaskFilterDto, @GetUser() user: Users): Promise <Tasks []> {
         if (Object.keys (getTasksFilterDto).length) {
             return await this.taskService.getTasksWithFilter (getTasksFilterDto);
         } else {

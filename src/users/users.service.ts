@@ -20,7 +20,15 @@ export class UsersService {
 
     async signInUser(signInUserDto: SignInUserDto): Promise<JWTPayload> {
         const userInfo = await this.userRepository.validateCredentials(signInUserDto);
-        const accessToken = await this.jwtService.sign({ id: (userInfo as Users).id });
+        const accessToken = await this.jwtService.sign(
+            {
+                id: (userInfo as Users).id
+            },
+            {
+                secret: process.env.JWT_SECRET,
+                expiresIn: parseInt(process.env.JWT_SECRET_LIFETIME)
+            }
+        );
         return { accessToken };
     }
 }

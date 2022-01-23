@@ -4,9 +4,13 @@ import { TaskStatus } from "../task.model";
 export class GetTaskFilterDto {
 
     @IsOptional ()
-    @IsEnum (TaskStatus)
+    @IsEnum (
+        TaskStatus,
+        {
+            message: 'Status can be OPEN, IN_PROGRESS, DONE.'
+        }
+    )
     status: TaskStatus;
-
 
     @IsOptional ()
     @IsNotEmpty ()

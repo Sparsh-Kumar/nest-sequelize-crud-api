@@ -1,6 +1,7 @@
 
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { Tasks } from 'src/tasks/models/tasks.model';
 
 @Table
 export class Users extends Model {
@@ -39,6 +40,9 @@ export class Users extends Model {
         allowNull: false,
     })
     salt: string;
+
+    @HasMany(() => Tasks)
+    tasks: Tasks[]
 
     async validatePassword(
         password: string,

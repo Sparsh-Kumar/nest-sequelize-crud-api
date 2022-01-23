@@ -7,6 +7,7 @@ import { Inject } from '@nestjs/common';
 import { Tasks } from '../models/tasks.model';
 import { GetTaskFilterDto } from '../dto/get-tasks-filter.dto';
 import { Op } from 'sequelize';
+import { Users } from 'src/users/models/users.model';
 
 
 @Injectable ()
@@ -14,21 +15,31 @@ export class TaskRepository {
     
     constructor (@Inject (TASK_REPOSITORY) private readonly taskRepo: typeof Tasks) { }
 
-    async createNewTask (createTaskDto: CreateTaskDto): Promise <Tasks> {
+    async createNewTask (
+        createTaskDto: CreateTaskDto,
+        user: Users
+    ): Promise <Tasks> {
 
         const { title, description } = createTaskDto;
         const status = 'OPEN';
         const task = {
             title,
             description,
-            status
+            status,
+            userId: (user.toJSON() as Users).id
         }
 
         return await this.taskRepo.create (task)
     }
 
-    async getTaskById (id: string): Promise <Tasks> {
-        const task = await this.taskRepo.findOne ({ where: { id } });
+    async getTaskById (
+        id: string,
+        user: Users
+    ): Promise <Tasks> {
+        let Query: any = {};
+        Query['id'] = id;
+        Query['userId'] = (user.toJSON() as Users).id;
+        const task = await this.taskRepo.findOne ({ where: Query });
         if (!task) {
             throw new NotFoundException (`Task with ID = ${id} not found`);
         }
@@ -36,41 +47,61 @@ export class TaskRepository {
     }
 
 
-    async getAllTasks (): Promise <Tasks []> {
-        return await this.taskRepo.findAll ({});
+    async getAllTasks (user: Users): Promise <Tasks []> {
+        let Query: any = {};
+        Query['userId'] = (user.toJSON() as Users).id;
+        return await this.taskRepo.findAll ({ where: Query });
     }
 
-
-    async getTasksWithFilter (filterDto: GetTaskFilterDto): Promise <Tasks []> {
-        
+    async getTasksWithFilter (
+        filterDto: GetTaskFilterDto,
+        user: Users
+    ): Promise <Tasks []> {
         const { status, searchTerm } = filterDto;
-        let query = { status: '', $or: {} }
-
+        let Query: any = {};
         if (status) {
-            query.status = status;
+            Query['status'] = status;
         }
-
-        /*
-        if (searchTerm) {
-            query.$or = [
-                { title: { [Op.like]: `%${searchTerm}%` } },
-                { description: { [Op.like]: `%${searchTerm}%` } }
+        if(searchTerm) {
+            Query[Op.or] = [
+                {
+                    title: {
+                        [Op.like]: `%${searchTerm}%`
+                    }
+                },
+                {
+                    description: {
+                        [Op.like]: `%${searchTerm}%`
+                    }
+                }
             ]
-        }*/
-
-        const tasks = await this.taskRepo.findAll ({ where: query });
+        }
+        Query['userId'] = (user.toJSON() as Users).id;
+        const tasks = await this.taskRepo.findAll ({ where: Query });
         return tasks;
     }
 
-    async deleteTaskById (id: string): Promise <void> {
-        await this.getTaskById (id);
-        await this.taskRepo.destroy ({ where: { id }});
+    async deleteTaskById (
+        id: string,
+        user: Users
+    ): Promise <void> {
+        let Query: any = {};
+        Query['id'] = id;
+        Query['userId'] = (user.toJSON() as Users).id;
+        await this.getTaskById (id, user);
+        await this.taskRepo.destroy ({ where: Query });
     }
 
 
-    async updateTaskStatus (id: string, status: TaskStatus): Promise <any> {
-        await this.getTaskById (id);
-        return await this.taskRepo.update ({ status }, { where: { id } });
+    async updateTaskStatus (
+        id: string,
+        status: TaskStatus,
+        user: Users
+    ): Promise <any> {
+        let Query: any = {};
+        Query['id'] = id;
+        Query['userId'] = (user.toJSON() as Users).id;
+        await this.getTaskById (id, user);
+        return await this.taskRepo.update ({ status }, { where: Query });
     }
-
 }

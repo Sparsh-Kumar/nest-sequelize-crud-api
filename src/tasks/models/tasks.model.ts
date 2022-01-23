@@ -1,6 +1,7 @@
 
 
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Users } from 'src/users/models/users.model';
 import { TaskStatus } from '../task.model';
 
 @Table
@@ -33,4 +34,18 @@ export class Tasks extends Model {
     })
     status: string;
 
+    @ForeignKey(() => Users)
+    @Column ({
+        type: DataType.UUID
+    })
+    userId: string;
+
+    @BelongsTo(() => Users)
+    user: Users
+
+    //https://github.com/RobinBuschmann/sequelize-typescript
+    /*
+        Relations can be described directly in the model by the
+        @HasMany, @HasOne, @BelongsTo, @BelongsToMany and @ForeignKey annotations.
+    */
 }

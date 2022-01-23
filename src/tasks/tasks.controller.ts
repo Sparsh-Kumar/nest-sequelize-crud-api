@@ -17,28 +17,40 @@ export class TasksController {
     constructor (private taskService: TasksService) {}
 
     @Get ()
-    async getTasks (@Query (ValidationPipe) getTasksFilterDto: GetTaskFilterDto, @GetUser() user: Users): Promise <Tasks []> {
+    async getTasks (
+        @Query (ValidationPipe) getTasksFilterDto: GetTaskFilterDto,
+        @GetUser() user: Users
+    ): Promise <Tasks []> {
         if (Object.keys (getTasksFilterDto).length) {
-            return await this.taskService.getTasksWithFilter (getTasksFilterDto);
+            return await this.taskService.getTasksWithFilter (getTasksFilterDto, user);
         } else {
-            return await this.taskService.getAllTasks ();
+            return await this.taskService.getAllTasks (user);
         }
     }
 
     @Get (':id')
-    async getTaskById (@Param ('id') id: string): Promise <Tasks> {
-        return await this.taskService.getTaskById (id)
+    async getTaskById (
+        @Param ('id') id: string,
+        @GetUser() user: Users
+    ): Promise <Tasks> {
+        return await this.taskService.getTaskById (id, user)
     }
 
     @Post ()
     @UsePipes (ValidationPipe)
-    async createTask (@Body () createTaskDto: CreateTaskDto): Promise <Tasks> {
-        return await this.taskService.createTask (createTaskDto);
+    async createTask (
+        @Body () createTaskDto: CreateTaskDto,
+        @GetUser() user: Users
+    ): Promise <Tasks> {
+        return await this.taskService.createTask (createTaskDto, user);
     }
 
     @Delete (':id')
-    async deleteTask (@Param ('id') id: string): Promise <void> {
-        await this.taskService.deleteTask (id);
+    async deleteTask (
+        @Param ('id') id: string,
+        @GetUser() user: Users
+    ): Promise <void> {
+        await this.taskService.deleteTask (id, user);
     }
 
     /*
@@ -62,9 +74,10 @@ export class TasksController {
     @Patch (':id/status')
     async updateTaskStatus (
         @Param ('id') id: string,
-        @Body ('status', TaskStatusValidationPipe) status: TaskStatus
+        @Body ('status', TaskStatusValidationPipe) status: TaskStatus,
+        @GetUser() user: Users,
     ): Promise <any> {
-        return await this.taskService.updateTaskStatus (id, status);
+        return await this.taskService.updateTaskStatus (id, status, user);
     }
 
 }

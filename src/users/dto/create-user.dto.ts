@@ -2,6 +2,7 @@
 
 // https://github.com/typestack/class-validator#validation-decorators
 
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
@@ -9,6 +10,7 @@ export class CreateUserDto {
     @IsNotEmpty ()
     @MinLength (4)
     @MaxLength (10)
+    @ApiProperty()
     username: string;
 
     @IsNotEmpty ()
@@ -20,6 +22,7 @@ export class CreateUserDto {
             message: 'Please enter a valid email !.'
         }
     )
+    @ApiProperty()
     email: string;
 
     @IsNotEmpty ()
@@ -31,5 +34,6 @@ export class CreateUserDto {
             message: 'Password must contain a special character, a number, lowecase and uppercase letter !.'
         }
     )
+    @ApiProperty()
     password: string;
 }

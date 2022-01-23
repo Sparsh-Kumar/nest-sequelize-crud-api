@@ -7,6 +7,7 @@ import { GetTaskFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './repositories/task.repository';
 import { Tasks } from './models/tasks.model';
 import { Users } from 'src/users/models/users.model';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -50,10 +51,10 @@ export class TasksService {
 
     async updateTaskStatus (
         id: string,
-        status: TaskStatus,
+        updateTaskDto: UpdateTaskDto,
         user: Users
     ): Promise <any> {
-        return await this.tasksRepository.updateTaskStatus (id, status, user);
+        return await this.tasksRepository.updateTaskStatus (id, updateTaskDto, user);
     }
 
 

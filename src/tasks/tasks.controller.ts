@@ -9,13 +9,25 @@ import { Tasks } from './models/tasks.model';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/users/custom-decorators/get-user.decorator';
 import { Users } from 'src/users/models/users.model';
+import { ApiBearerAuth, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
+@ApiTags('task')
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
     
     constructor (private taskService: TasksService) {}
 
+    @ApiOkResponse({
+        description: 'Get tasks successfully!.',
+        type: Tasks
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized error.'
+    })
     @Get ()
     async getTasks (
         @Query (ValidationPipe) getTasksFilterDto: GetTaskFilterDto,
@@ -28,6 +40,19 @@ export class TasksController {
         }
     }
 
+    @ApiOkResponse({
+        description: 'Get Individual task successfully!.',
+        type: Tasks
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized error.'
+    })
+    @ApiNotFoundResponse({
+        description: 'Task with given id not found.'
+    })
     @Get (':id')
     async getTaskById (
         @Param ('id') id: string,
@@ -36,6 +61,16 @@ export class TasksController {
         return await this.taskService.getTaskById (id, user)
     }
 
+    @ApiOkResponse({
+        description: 'Created task successfully !.',
+        type: Tasks
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized error.'
+    })
     @Post ()
     @UsePipes (ValidationPipe)
     async createTask (
@@ -45,6 +80,19 @@ export class TasksController {
         return await this.taskService.createTask (createTaskDto, user);
     }
 
+    @ApiOkResponse({
+        description: '',
+        type: Tasks
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized error.'
+    })
+    @ApiNotFoundResponse({
+        description: 'Task with Id not found.'
+    })
     @Delete (':id')
     async deleteTask (
         @Param ('id') id: string,
@@ -71,13 +119,26 @@ export class TasksController {
      * The above controller is making use of DTOs for validating the status value on updating the Task.
     */
    
+    @ApiOkResponse({
+        description: 'Updated task successfully !.',
+        type: Tasks
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized error.'
+    })
+    @ApiNotFoundResponse({
+        description: 'Task with Id not found.'
+    })
     @Patch (':id/status')
-    async updateTaskStatus (
-        @Param ('id') id: string,
-        @Body ('status', TaskStatusValidationPipe) status: TaskStatus,
-        @GetUser() user: Users,
-    ): Promise <any> {
-        return await this.taskService.updateTaskStatus (id, status, user);
+    async updateTaskStatus(
+        @Param('id') id: string,
+        @Body() updateTaskDto: UpdateTaskDto,
+        @GetUser() user: Users
+    ): Promise<Tasks> {
+        return await this.taskService.updateTaskStatus(id, updateTaskDto, user)
     }
 
 }

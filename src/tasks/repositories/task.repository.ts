@@ -8,6 +8,7 @@ import { Tasks } from '../models/tasks.model';
 import { GetTaskFilterDto } from '../dto/get-tasks-filter.dto';
 import { Op } from 'sequelize';
 import { Users } from 'src/users/models/users.model';
+import { UpdateTaskDto } from '../dto/update-task.dto';
 
 
 @Injectable ()
@@ -95,9 +96,10 @@ export class TaskRepository {
 
     async updateTaskStatus (
         id: string,
-        status: TaskStatus,
+        updateTaskDto: UpdateTaskDto,
         user: Users
     ): Promise <any> {
+        const { status } = updateTaskDto;
         let Query: any = {};
         Query['id'] = id;
         Query['userId'] = (user.toJSON() as Users).id;

@@ -103,10 +103,9 @@ export class TasksController {
 
     /*
     @Patch (':id/status')
-    @UsePipes (ValidationPipe)
     updateTaskStatus (
         @Param ('id') id: string,
-        @Body () updateTaskDto: UpdateTaskDto
+        @Body ('status', TasksStatusValidationPipe) status: TaskStatus,
     ): Task {
         return this.taskService.updateTaskStatus (id, updateTaskDto);
     }*/
@@ -115,8 +114,8 @@ export class TasksController {
     /** 
      * As you can see I am making use of 
      * custom validation pipe for validating the status value on update task controller
-     * You can also make use of DTOs for that purpose, I have commented out the above controller
-     * The above controller is making use of DTOs for validating the status value on updating the Task.
+     * You can also make use of DTOs for that purpose, You can see the above controller making use of 
+     * Custom Pipes to validate status param in Body.
     */
    
     @ApiOkResponse({
